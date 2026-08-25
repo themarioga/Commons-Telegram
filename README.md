@@ -6,17 +6,11 @@ Para utilizarlo debemos crear una clase de configuración como la siguiente:
     @Configuration
     public class ExampleBotConfig {
 
-        @Value("${example.bot.enabled}")
-        private Boolean enabled;
-    
         @Value("${example.bot.token}")
         private String token;
     
         @Value("${example.bot.name}")
         private String name;
-    
-        @Value("${example.bot.path}")
-        private String path;
     
         @Value("${example.bot.webhook.url}")
         private String webhookURL;
@@ -26,27 +20,42 @@ Para utilizarlo debemos crear una clase de configuración como la siguiente:
     
         // Long polling instantiation
     
-        @Bean("exampleBot")
-        @DependsOn({"telegramBotsApiLongPolling", "exampleBotApplicationService"})
+        @Bean("exampleService")
         @ConditionalOnProperty(prefix = "example.bot", name="type", havingValue = "longpolling")
-        public LongPollingBotServiceImpl longPollingBotService(
-                @Qualifier("telegramBotsApiLongPolling") TelegramBotsApi telegramBotsApi,
-                @Qualifier("exampleBotApplicationService") ApplicationService applicationService) {
-            return BotCreationUtils.createLongPollingBot(enabled, token, name, telegramBotsApi, applicationService);
+        public BotService longPollingService(@Qualifier("exampleBotApplicationService") ApplicationService applicationService) {
+            return new LongPollingBotServiceImpl(token, name, applicationService);
+        }
+    
+        @Bean("exampleBot")
+        @DependsOn({"exampleService"})
+        @ConditionalOnExpression("${example.bot.enabled} and ${example.bot.type} == 'longpolling'")
+        public SpringLongPollingBot longPollingBot(@Qualifier("exampleService") BotService botService) {
+            return (SpringLongPollingBot) botService.getBean();
         }
     
         // Webhook instantiation
     
-        @Bean("exampleBot")
-        @DependsOn({"telegramBotsApiWebhook", "exampleBotApplicationService"})
+        @Bean("exampleService")
         @ConditionalOnProperty(prefix = "example.bot", name="type", havingValue = "webhook")
-        public WebhookBotServiceImpl webhookBotService(
-                @Qualifier("telegramBotsApiWebhook") TelegramBotsApi telegramBotsApi,
-                @Qualifier("exampleBotApplicationService") ApplicationService applicationService) {
-            return BotCreationUtils.createWebhookBot(enabled, token, name, path, webhookURL, webhookCertPath, telegramBotsApi, applicationService);
+        public BotService webhookService(@Qualifier("exampleBotApplicationService") ApplicationService applicationService) {
+            return new WebhookBotServiceImpl(token, name, webhookURL, webhookCertPath, applicationService);
+        }
+    
+        @Bean("exampleBot")
+        @DependsOn({"exampleService"})
+        @ConditionalOnExpression("${example.bot.enabled} and ${example.bot.type} == 'webhook'")
+        public SpringTelegramWebhookBot webhookBot(@Qualifier("exampleService") BotService botService) {
+            return (SpringTelegramWebhookBot) botService.getBean();
         }
     
     }
+
+`BotService.getBean()` returns the Spring-managed bean the corresponding telegrambots starter
+(`telegrambots-springboot-longpolling-starter` / `telegrambots-springboot-webhook-starter`)
+needs registered — `SpringLongPollingBot` or `SpringTelegramWebhookBot` respectively — which
+is why it's re-exposed as its own `@Bean`. Note the webhook bot's path is always `/` +
+`example.bot.name` (set internally by `WebhookBotServiceImpl`), so there's no separate
+`example.bot.path` property to configure.
 
 Y además debemos implementar la clase ApplicationService de una forma como la siguiente:
 
@@ -132,12 +141,11 @@ Además tenemos que tener un fichero de configuración como el siguiente:
     
     spring.main.allow-circular-references=true
     
-    telegram.bot.type=longpolling
+    example.bot.type=longpolling
     
     example.bot.enabled=${EXAMPLE_BOT_ENABLED}
     example.bot.token=${EXAMPLE_BOT_TOKEN}
     example.bot.name=${EXAMPLE_BOT_NAME}
-    example.bot.path=
     example.bot.webhook.url=
     example.bot.webhook.cert.path=
 
@@ -149,12 +157,11 @@ O en caso de que queramos webhooks
     
     spring.main.allow-circular-references=true
     
-    telegram.bot.type=webhook
+    example.bot.type=webhook
     
     example.bot.enabled=${EXAMPLE_BOT_ENABLED}
     example.bot.token=${EXAMPLE_BOT_TOKEN}
     example.bot.name=${EXAMPLE_BOT_NAME}
-    example.bot.path=${EXAMPLE_BOT_PATH}
     example.bot.webhook.url=${EXAMPLE_BOT_WEBHOOK_URL}
     example.bot.webhook.cert.path=${EXAMPLE_BOT_WEBHOOK_CERT_PATH}    
     

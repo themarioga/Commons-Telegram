@@ -10,6 +10,4 @@ public class BotResponseErrorI18n {
     public static final String COMMAND_SHOULD_BE_ON_PRIVATE = "Este comando debe ser enviado por privado al bot.";
     public static final String COMMAND_SHOULD_BE_ON_GROUP = "Este comando debe ser enviado en un grupo en el que esté el bot.";
 
-    public static final String UNKNOWN_ERROR = "Error desconocido";
-
 }

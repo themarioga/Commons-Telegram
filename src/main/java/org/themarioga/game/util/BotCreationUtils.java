@@ -31,7 +31,7 @@ public class BotCreationUtils {
 
             telegramClient.execute(webhookBuilder.build());
         } catch (TelegramApiException e) {
-            logger.info("Error setting webhook");
+            logger.error("Error setting webhook", e);
         }
     }
 
@@ -39,7 +39,7 @@ public class BotCreationUtils {
         try {
             telegramClient.execute(new DeleteWebhook());
         } catch (TelegramApiException e) {
-            logger.info("Error deleting webhook");
+            logger.error("Error deleting webhook", e);
         }
     }
 
