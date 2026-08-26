@@ -10,7 +10,7 @@ total_tokens: 18355
 
 ## System Overview
 
-TelegramBotUtils is a small **Spring Boot library** (not a standalone app) that provides
+Commons-Telegram is a small **Spring Boot library** (not a standalone app) that provides
 reusable scaffolding for building Telegram bots on top of the official
 `telegram-telegrambots` Java SDK's Spring Boot starters — supporting both **long-polling**
 and **webhook** transport modes, plus optional Let's Encrypt HTTP-01 challenge handling for
@@ -25,7 +25,7 @@ graph TB
         Handlers["CommandHandler / CallbackQueryHandler lambdas"]
     end
 
-    subgraph Library["TelegramBotUtils"]
+    subgraph Library["Commons-Telegram"]
         subgraph Transport
             LP[LongPollingBotServiceImpl]
             WH[WebhookBotServiceImpl]
@@ -59,7 +59,7 @@ graph TB
 ## Directory Structure
 
 ```
-TelegramBotUtils/
+Commons-Telegram/
 ├── pom.xml                          # Maven module, versions inherited from parent POM
 ├── README.md                        # Spanish usage guide (partially stale, see Gotchas)
 └── src/main/

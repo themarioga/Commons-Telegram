@@ -1,6 +1,6 @@
 ## Codebase Overview
 
-TelegramBotUtils is a small Spring Boot **library** (Maven artifact `org.themarioga:TelegramBotUtils`,
+Commons-Telegram is a small Spring Boot **library** (Maven artifact `org.themarioga:Commons-Telegram`,
 versions inherited from parent POM `org.themarioga:parent:2.0.0`) that provides reusable scaffolding
 for building Telegram bots — both long-polling and webhook transport modes — on top of the official
 `telegram-telegrambots` Java SDK's Spring Boot starters, plus optional Let's Encrypt HTTP-01 challenge

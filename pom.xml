@@ -11,15 +11,15 @@
         <version>2.0.0</version>
     </parent>
 
-    <artifactId>TelegramBotUtils</artifactId>
-    <name>Utils for telegram bots</name>
-    <description>Library for telegram bot utilities</description>
+    <artifactId>commons-telegram</artifactId>
+    <name>Commons Telegram Library</name>
+    <description>Librería base común a los bots de Telegram: identidad, sesión y despacho de updates</description>
 
     <dependencies>
         <!-- ENGINE DEPENDENCIES: identidad de usuario, i18n y contexto de seguridad compartidos -->
         <dependency>
             <groupId>org.themarioga</groupId>
-            <artifactId>engine-commons</artifactId>
+            <artifactId>commons-engine</artifactId>
         </dependency>
 
         <!-- Telegram -->

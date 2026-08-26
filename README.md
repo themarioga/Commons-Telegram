@@ -1,4 +1,4 @@
-# TelegramBotUtils
+# Commons-Telegram
 Utilidades para la creación de bots de telegram
 
 Para utilizarlo debemos crear una clase de configuración como la siguiente:
