@@ -16,6 +16,12 @@
     <description>Library for telegram bot utilities</description>
 
     <dependencies>
+        <!-- ENGINE DEPENDENCIES: identidad de usuario, i18n y contexto de seguridad compartidos -->
+        <dependency>
+            <groupId>org.themarioga</groupId>
+            <artifactId>engine-commons</artifactId>
+        </dependency>
+
         <!-- Telegram -->
         <dependency>
             <groupId>org.telegram</groupId>
