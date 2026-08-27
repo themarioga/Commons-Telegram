@@ -3,6 +3,8 @@ package org.themarioga.commons.telegram.services.intf;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
+import java.util.concurrent.CompletableFuture;
+
 public interface BotMessageService {
 
     void sendMessage(long chatId, String text);
@@ -21,7 +23,14 @@ public interface BotMessageService {
      */
     void setPendingReply(long chatId, String command);
 
-    void sendMessageAsync(long chatId, String text, Callback callback);
+    /**
+     * Envía sin bloquear el hilo que atiende el update, y da acceso al mensaje enviado para poder
+     * quedarse con su identificador.
+     * <p>
+     * La continuación corre en un hilo del pool, donde no hay sesión: hay que envolverla con
+     * {@link org.themarioga.commons.telegram.security.TelegramSession} si necesita usuario o chat.
+     */
+    CompletableFuture<Message> sendMessageAsync(long chatId, String text);
 
     void editMessage(long chatId, int messageId, String text);
 
@@ -34,13 +43,5 @@ public interface BotMessageService {
     void answerCallbackQuery(String callbackQueryId, String text);
 
     String sanitizeTextFromCommand(String command, String text);
-
-    interface Callback {
-
-        void success(Message response);
-
-        void failure(Throwable e);
-
-    }
 
 }

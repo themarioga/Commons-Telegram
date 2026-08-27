@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.message.Message;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ForceReplyKeyboard;
@@ -11,6 +12,8 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 import org.themarioga.commons.telegram.services.intf.BotMessageService;
+
+import java.util.concurrent.CompletableFuture;
 
 public class BotMessageServiceImpl implements BotMessageService {
 
@@ -69,16 +72,18 @@ public class BotMessageServiceImpl implements BotMessageService {
     }
 
     @Override
-    public void sendMessageAsync(long chatId, String text, Callback callback) {
+    public CompletableFuture<Message> sendMessageAsync(long chatId, String text) {
+        SendMessage sendMessage = new SendMessage(String.valueOf(chatId), text);
+        sendMessage.enableHtml(true);
+
         try {
-            SendMessage sendMessage = new SendMessage(String.valueOf(chatId), text);
-            sendMessage.enableHtml(true);
-            telegramClient.executeAsync(sendMessage).thenAccept(callback::success).exceptionally(throwable -> {
-                callback.failure(throwable);
-                return null;
-            });
+            return telegramClient.executeAsync(sendMessage);
         } catch (TelegramApiException e) {
+            // Un fallo al construir la petición se devuelve como futuro fallido, para que quien
+            // encadena lo trate igual que un fallo de envío y no tenga dos caminos de error.
             logger.error(e.getMessage(), e);
+
+            return CompletableFuture.failedFuture(e);
         }
     }
 
