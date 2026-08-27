@@ -1,24 +1,33 @@
 ## Codebase Overview
 
-Commons-Telegram is a small Spring Boot **library** (Maven artifact `org.themarioga:Commons-Telegram`,
-versions inherited from parent POM `org.themarioga:parent:2.0.0`) that provides reusable scaffolding
-for building Telegram bots — both long-polling and webhook transport modes — on top of the official
-`telegram-telegrambots` Java SDK's Spring Boot starters, plus optional Let's Encrypt HTTP-01 challenge
-support for self-managed webhook SSL. Consumers implement `ApplicationService` to register
-`CommandHandler`/`CallbackQueryHandler` maps; the library parses incoming updates, dispatches to the
-right handler, and exposes a wrapped outbound-messaging API (`BotMessageService`).
+Commons-Telegram es la **librería** (Maven `org.themarioga:commons-telegram`) con lo que comparten
+todos los bots de Telegram del proyecto: la identidad de quien escribe, la sesión de cada update, el
+reparto a los handlers y el envío de mensajes. No sabe nada de ningún juego concreto; la usan
+`CAH-Telegram` y, cuando exista, el bot de SH.
 
-**Stack**: Java, Spring Boot, `org.telegram:telegrambots-*` (long-polling & webhook starters, client),
-Maven (no explicit local versions — all inherited from parent POM), `letsencrypt-helper-tomcat`.
+Se apoya en `commons-engine` para el modelo de usuario y el contexto de seguridad, de modo que un
+handler puede preguntar quién habla sin que el motor sepa qué es Telegram.
 
-**Structure**: `model` (DTOs + consumer-facing functional interfaces) → `service/intf` (public
-contracts: `ApplicationService`, `BotMessageService`, `BotService`) → `service/impl`
-(`LongPollingBotServiceImpl`, `WebhookBotServiceImpl`, `BotMessageServiceImpl`) → `util`
-(parsing/formatting helpers, webhook (de)registration) → `constants`/`config` (shared literals,
-optional Let's Encrypt wiring).
+**Stack**: Java, Spring Boot 4.1, Hibernate/JPA (solo la tabla `telegram_user`), Spring Security
+(contexto programático), `org.telegram:telegrambots-*`, `letsencrypt-helper-tomcat`, JUnit 5 +
+Mockito.
 
-⚠️ The README documents `BotCreationUtils.createLongPollingBot`/`createWebhookBot` factory methods
-that do not currently exist in source — see the map's Gotchas section.
+**Structure**: `models` (DTOs de comando/callback, los interfaces funcionales que implementa el
+consumidor, y la entidad `TelegramUser`) → `dao` → `services/intf` (`ApplicationService`,
+`BotMessageService`, `BotService`, `TelegramUserService`, `TelegramRoomResolver`) → `services/impl`
+(los dos transportes, el `UpdateDispatcher` común, el interceptor de sesión y los registros en
+memoria) → `security` (sesión y acceso a ella) → `config` (arranque de los bots, webhook, Let's
+Encrypt, administradores) → `util`.
 
-For detailed architecture, module guide, data-flow diagrams, and navigation guide, see
-[docs/CODEBASE_MAP.md](docs/CODEBASE_MAP.md).
+⚠️ Cosas que conviene saber antes de tocar nada:
+
+- **Esta librería sustituye a las autoconfiguraciones de los dos starters de telegrambots**, que
+  declaran el mismo bean y no pueden convivir; hay que excluirlas y el consumidor arranca por
+  `TelegramBotsRegistrarConfig`.
+- **El starter de webhook no publica ningún endpoint**: lo pone `TelegramWebhookController`.
+- **La sesión se monta y se desmonta por update.** Si algo se ejecuta en otro hilo, tiene que ir
+  envuelto en `TelegramSession`, o el motor no encontrará al usuario.
+- **Nada de esto se ha probado contra un bot real todavía.**
+
+Para la arquitectura, el flujo de un update y el resto de trampas, ver
+[docs/CODEBASE_MAP.md](docs/CODEBASE_MAP.md). Para el ejemplo de uso, [README.md](README.md).
