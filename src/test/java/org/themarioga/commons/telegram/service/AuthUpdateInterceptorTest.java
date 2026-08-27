@@ -16,6 +16,7 @@ import org.themarioga.commons.engine.models.Lang;
 import org.themarioga.commons.engine.models.Room;
 import org.themarioga.commons.engine.models.User;
 import org.themarioga.commons.engine.security.SecurityUtils;
+import org.themarioga.commons.telegram.config.TelegramAdmins;
 import org.themarioga.commons.telegram.models.TelegramUser;
 import org.themarioga.commons.telegram.security.TelegramContextHolder;
 import org.themarioga.commons.telegram.security.TelegramSecurityUtils;
@@ -67,7 +68,7 @@ class AuthUpdateInterceptorTest {
         telegramUser.setUser(user);
         telegramUser.setLanguageCode("es");
 
-        interceptor = new AuthUpdateInterceptor(telegramUserService, roomResolverProvider, List.of());
+        interceptor = new AuthUpdateInterceptor(telegramUserService, roomResolverProvider, new TelegramAdmins(List.of()));
     }
 
     @AfterEach
@@ -149,7 +150,7 @@ class AuthUpdateInterceptorTest {
         when(roomResolverProvider.getIfAvailable()).thenReturn(null);
         when(telegramUserService.login(any())).thenReturn(telegramUser);
 
-        new AuthUpdateInterceptor(telegramUserService, roomResolverProvider, List.of(TELEGRAM_ID))
+        new AuthUpdateInterceptor(telegramUserService, roomResolverProvider, new TelegramAdmins(List.of(TELEGRAM_ID)))
                 .before(privateMessage(), "cclhbot");
 
         Assertions.assertTrue(TelegramSecurityUtils.isAdmin());

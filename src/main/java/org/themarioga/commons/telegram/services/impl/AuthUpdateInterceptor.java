@@ -4,12 +4,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.themarioga.commons.engine.security.SecurityUtils;
 import org.themarioga.commons.engine.security.UserRole;
+import org.themarioga.commons.telegram.config.TelegramAdmins;
 import org.themarioga.commons.telegram.models.TelegramUser;
 import org.themarioga.commons.telegram.models.UpdateInterceptor;
 import org.themarioga.commons.telegram.security.TelegramContext;
@@ -18,8 +18,7 @@ import org.themarioga.commons.telegram.security.TelegramUserDetails;
 import org.themarioga.commons.telegram.services.intf.TelegramRoomResolver;
 import org.themarioga.commons.telegram.services.intf.TelegramUserService;
 
-import java.util.List;
-import java.util.Set;
+
 
 /**
  * Monta la sesión de cada update y —lo importante— la desmonta después.
@@ -35,14 +34,14 @@ public class AuthUpdateInterceptor implements UpdateInterceptor {
 
     private final TelegramUserService telegramUserService;
     private final ObjectProvider<TelegramRoomResolver> roomResolver;
-    private final Set<Long> adminIds;
+    private final TelegramAdmins admins;
 
     @Autowired
     public AuthUpdateInterceptor(TelegramUserService telegramUserService, ObjectProvider<TelegramRoomResolver> roomResolver,
-                                 @Value("${telegram.bots.admin-ids:}") List<Long> adminIds) {
+                                 TelegramAdmins admins) {
         this.telegramUserService = telegramUserService;
         this.roomResolver = roomResolver;
-        this.adminIds = adminIds != null ? Set.copyOf(adminIds) : Set.of();
+        this.admins = admins;
     }
 
     @Override
@@ -71,7 +70,7 @@ public class AuthUpdateInterceptor implements UpdateInterceptor {
     }
 
     private UserRole roleOf(Long telegramId) {
-        return adminIds.contains(telegramId) ? UserRole.ADMIN : UserRole.USER;
+        return admins.contains(telegramId) ? UserRole.ADMIN : UserRole.USER;
     }
 
 }
