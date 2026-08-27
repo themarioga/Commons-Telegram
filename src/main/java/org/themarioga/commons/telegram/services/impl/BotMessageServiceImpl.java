@@ -6,6 +6,7 @@ import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ForceReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
@@ -17,12 +18,14 @@ public class BotMessageServiceImpl implements BotMessageService {
 
     private final TelegramClient telegramClient;
     private final String botName;
+    private final PendingReplyRegistry pendingReplies;
 
     // Depende del cliente y del nombre, no del BotService: pedir el bot entero creaba un ciclo de
     // dependencias con el ApplicationService.
-    public BotMessageServiceImpl(TelegramClient telegramClient, String botName) {
+    public BotMessageServiceImpl(TelegramClient telegramClient, String botName, PendingReplyRegistry pendingReplies) {
         this.telegramClient = telegramClient;
         this.botName = botName;
+        this.pendingReplies = pendingReplies;
     }
 
     @Override
@@ -46,6 +49,23 @@ public class BotMessageServiceImpl implements BotMessageService {
         } catch (TelegramApiException e) {
             logger.error(e.getMessage(), e);
         }
+    }
+
+    @Override
+    public void sendMessageWithForceReply(long chatId, String text) {
+        try {
+            SendMessage sendMessage = new SendMessage(String.valueOf(chatId), text);
+            sendMessage.enableHtml(true);
+            sendMessage.setReplyMarkup(ForceReplyKeyboard.builder().forceReply(true).selective(true).build());
+            telegramClient.execute(sendMessage);
+        } catch (TelegramApiException e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void setPendingReply(long chatId, String command) {
+        pendingReplies.set(botName, chatId, command);
     }
 
     @Override

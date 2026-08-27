@@ -9,6 +9,18 @@ public interface BotMessageService {
 
     void sendMessage(long chatId, String text, InlineKeyboardMarkup inlineKeyboardMarkup);
 
+    /**
+     * Envía un mensaje que abre el cuadro de respuesta del usuario. Se usa junto a
+     * {@link #setPendingReply(long, String)}: el bot pregunta algo y la respuesta se encamina al
+     * comando que quedó pendiente.
+     */
+    void sendMessageWithForceReply(long chatId, String text);
+
+    /**
+     * Deja un comando esperando la siguiente respuesta que llegue en ese chat.
+     */
+    void setPendingReply(long chatId, String command);
+
     void sendMessageAsync(long chatId, String text, Callback callback);
 
     void editMessage(long chatId, int messageId, String text);
