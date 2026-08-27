@@ -57,7 +57,7 @@ public class TelegramUserServiceImpl implements TelegramUserService {
         telegramUser.setLanguageCode(from.getLanguageCode());
         telegramUser.setLastSeen(new Date());
 
-        return telegramUserDao.createOrUpdate(telegramUser);
+        return telegramUserDao.create(telegramUser);
     }
 
     @Override

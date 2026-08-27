@@ -72,7 +72,7 @@ class TelegramUserServiceTest {
         when(telegramUserDao.getByIdFetchingUser(TELEGRAM_ID)).thenReturn(null);
         when(i18NService.getLanguage("es")).thenReturn(lang);
         when(userService.createOrReactivate("themarioga", "Mario (@themarioga)", lang)).thenReturn(user);
-        when(telegramUserDao.createOrUpdate(any(TelegramUser.class))).thenAnswer(i -> i.getArgument(0));
+        when(telegramUserDao.create(any(TelegramUser.class))).thenAnswer(i -> i.getArgument(0));
 
         TelegramUser created = telegramUserService.register(from(TELEGRAM_ID, "themarioga", "Mario", "es"));
 
@@ -90,7 +90,7 @@ class TelegramUserServiceTest {
         when(telegramUserDao.getByIdFetchingUser(TELEGRAM_ID)).thenReturn(null);
         when(i18NService.getLanguage(null)).thenReturn(lang);
         when(userService.createOrReactivate("tg:" + TELEGRAM_ID, "Mario", lang)).thenReturn(user);
-        when(telegramUserDao.createOrUpdate(any(TelegramUser.class))).thenAnswer(i -> i.getArgument(0));
+        when(telegramUserDao.create(any(TelegramUser.class))).thenAnswer(i -> i.getArgument(0));
 
         telegramUserService.register(from(TELEGRAM_ID, null, "Mario", null));
 

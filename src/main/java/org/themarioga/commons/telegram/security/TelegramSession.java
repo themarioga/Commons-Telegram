@@ -34,17 +34,34 @@ public final class TelegramSession {
     }
 
     /**
-     * Ejecuta la acción con esta sesión puesta, y la retira al terminar pase lo que pase.
+     * Ejecuta la acción con esta sesión puesta y deja el hilo como estaba, pase lo que pase.
+     * <p>
+     * Restaura lo que hubiera en vez de limpiar sin más: normalmente esto corre en un hilo del pool
+     * que no tenía nada, pero si alguna vez se ejecuta en el mismo hilo que atiende el update
+     * (porque el envío se resolvió sin salir del hilo), limpiar le quitaría la sesión al resto del
+     * update.
      */
     public void run(Runnable action) {
+        Authentication previousAuthentication = SecurityContextHolder.getContext().getAuthentication();
+        TelegramContext previousContext = TelegramContextHolder.get();
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
         TelegramContextHolder.set(context);
 
         try {
             action.run();
         } finally {
-            SecurityContextHolder.clearContext();
-            TelegramContextHolder.clear();
+            if (previousAuthentication == null) {
+                SecurityContextHolder.clearContext();
+            } else {
+                SecurityContextHolder.getContext().setAuthentication(previousAuthentication);
+            }
+
+            if (previousContext == null) {
+                TelegramContextHolder.clear();
+            } else {
+                TelegramContextHolder.set(previousContext);
+            }
         }
     }
 
