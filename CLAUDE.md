@@ -27,7 +27,8 @@ Encrypt, administradores) → `util`.
 - **El starter de webhook no publica ningún endpoint**: lo pone `TelegramWebhookController`.
 - **La sesión se monta y se desmonta por update.** Si algo se ejecuta en otro hilo, tiene que ir
   envuelto en `TelegramSession`, o el motor no encontrará al usuario.
-- **Nada de esto se ha probado contra un bot real todavía.**
+- **El webhook ya recibe updates reales de Telegram**, pero nada aguas abajo del controller se ha
+  probado contra un bot real.
 
 Para la arquitectura, el flujo de un update y el resto de trampas, ver
 [docs/CODEBASE_MAP.md](docs/CODEBASE_MAP.md). Para el ejemplo de uso, [README.md](README.md).

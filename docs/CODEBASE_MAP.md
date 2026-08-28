@@ -268,8 +268,18 @@ Se parecen mucho en el nombre y no son lo mismo.
    que es el que reciben los handlers. Fácil importar el que no es.
 8. **Sin validación del `callback_data`**: se confía en el formato `__`. Un cliente puede mandar lo que
    quiera.
-9. **Nada probado contra Telegram**: ni long-polling con un token real ni el modo webhook de punta a
-   punta.
+9. **El webhook parsea el JSON a mano, y tiene que seguir haciéndolo.** Spring Boot 4 convierte con
+   Jackson 3 (`tools.jackson.*`) y telegrambots 10 está compilado contra Jackson 2
+   (`com.fasterxml.jackson.*`). El `@JsonDeserialize(builder = ...)` que genera `@Jacksonized`
+   cambió de paquete en la v3, así que Jackson 3 lo ignora y no sabe construir `MessageEntity`,
+   `User` ni ninguna clase sin constructor vacío: `InvalidDefinitionException: no Creators`.
+   `TelegramWebhookController` recibe el cuerpo como `String` y usa su propio `ObjectMapper` de
+   Jackson 2. Volver a `@RequestBody Update` rompe **todos** los updates con comando.
+10. **El webhook recibe updates reales; el resto sigue sin probarse.** Telegram entrega de verdad
+    contra `TelegramWebhookController` (comprobado el 2026-08-28), pero todos los updates morían al
+    deserializar (gotcha anterior). Aguas abajo del controller —`UpdateDispatcher`,
+    `TelegramSession`, los handlers y el envío— no se ha ejercitado nada contra un bot real, y
+    long-polling con un token real sigue sin probarse.
 
 ## Navigation Guide
 
