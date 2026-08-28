@@ -29,9 +29,7 @@ public class LongPollingBotServiceImpl implements BotService, SpringLongPollingB
     private final Map<String, CallbackQueryHandler> callbackQueries;
     private final UpdateDispatcher updateDispatcher;
 
-    public LongPollingBotServiceImpl(String botToken, String botName, TelegramClient telegramClient,
-                                     ApplicationService applicationService, PendingReplyRegistry pendingReplies,
-                                     List<UpdateInterceptor> interceptors) {
+    public LongPollingBotServiceImpl(String botToken, String botName, TelegramClient telegramClient, ApplicationService applicationService, PendingReplyRegistry pendingReplies, List<UpdateInterceptor> interceptors) {
         logger.info("Iniciando {} como longpolling...", botName);
 
         this.botToken = botToken;

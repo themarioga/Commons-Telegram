@@ -31,10 +31,7 @@ public class WebhookBotServiceImpl implements BotService {
 
     private final SpringTelegramWebhookBot springTelegramWebhookBot;
 
-    public WebhookBotServiceImpl(String botToken, String botName, String webhookURL, String webhookCertPath,
-                                 TelegramClient telegramClient,
-                                 ApplicationService applicationService, PendingReplyRegistry pendingReplies,
-                                 List<UpdateInterceptor> interceptors) {
+    public WebhookBotServiceImpl(String botToken, String botName, String webhookURL, String webhookCertPath, TelegramClient telegramClient, ApplicationService applicationService, PendingReplyRegistry pendingReplies, List<UpdateInterceptor> interceptors) {
         logger.info("Iniciando {} webhook en la url {}...", botName, webhookURL);
 
         this.botToken = botToken;

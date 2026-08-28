@@ -66,7 +66,8 @@ class TelegramSessionTest {
 
         AtomicReference<Object> afterwards = new AtomicReference<>();
         CompletableFuture.runAsync(() -> {
-            session.run(() -> { /* el trabajo asíncrono */ });
+            session.run(() -> {
+                /* el trabajo asíncrono */ });
 
             afterwards.set(SecurityUtils.getUserDetails());
         }).get();

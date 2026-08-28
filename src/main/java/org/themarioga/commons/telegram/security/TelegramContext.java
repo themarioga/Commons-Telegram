@@ -29,8 +29,7 @@ public class TelegramContext {
     private Room room;
     private boolean roomResolved;
 
-    private TelegramContext(String botName, User from, Chat chat, Integer messageId, String callbackQueryId,
-                            TelegramRoomResolver roomResolver) {
+    private TelegramContext(String botName, User from, Chat chat, Integer messageId, String callbackQueryId, TelegramRoomResolver roomResolver) {
         this.botName = botName;
         this.from = from;
         this.chatId = chat != null ? chat.getId() : null;
@@ -52,8 +51,7 @@ public class TelegramContext {
             org.telegram.telegrambots.meta.api.objects.CallbackQuery callbackQuery = update.getCallbackQuery();
             Message message = callbackQuery.getMessage() instanceof Message m ? m : null;
 
-            return new TelegramContext(botName, callbackQuery.getFrom(), message != null ? message.getChat() : null,
-                    message != null ? message.getMessageId() : null, callbackQuery.getId(), roomResolver);
+            return new TelegramContext(botName, callbackQuery.getFrom(), message != null ? message.getChat() : null, message != null ? message.getMessageId() : null, callbackQuery.getId(), roomResolver);
         }
 
         return new TelegramContext(botName, null, null, null, null, roomResolver);

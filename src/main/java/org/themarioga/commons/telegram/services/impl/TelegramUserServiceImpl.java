@@ -48,8 +48,7 @@ public class TelegramUserServiceImpl implements TelegramUserService {
             return refresh(existing, from);
         }
 
-        User user = userService.createOrReactivate(TelegramUserUtils.usernameOf(from),
-                BotMessageUtils.getUsername(from), i18NService.getLanguage(from.getLanguageCode()));
+        User user = userService.createOrReactivate(TelegramUserUtils.usernameOf(from), BotMessageUtils.getUsername(from), i18NService.getLanguage(from.getLanguageCode()));
 
         TelegramUser telegramUser = new TelegramUser();
         telegramUser.setId(from.getId());
@@ -118,9 +117,7 @@ public class TelegramUserServiceImpl implements TelegramUserService {
         if (previousOwner == null || previousOwner.getId().equals(newOwner.getId())) return;
 
         TelegramUser previousTelegramUser = telegramUserDao.getByUser(previousOwner);
-        String fallback = previousTelegramUser != null
-                ? TelegramUserUtils.syntheticUsernameOf(previousTelegramUser.getId())
-                : TelegramUserUtils.SYNTHETIC_PREFIX + previousOwner.getId();
+        String fallback = previousTelegramUser != null ? TelegramUserUtils.syntheticUsernameOf(previousTelegramUser.getId()) : TelegramUserUtils.SYNTHETIC_PREFIX + previousOwner.getId();
 
         logger.info("Username {} changed hands: demoting previous owner {} to {}", username, previousOwner.getId(), fallback);
 

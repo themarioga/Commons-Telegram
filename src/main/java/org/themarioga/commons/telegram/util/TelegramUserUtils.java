@@ -30,9 +30,7 @@ public class TelegramUserUtils {
      * el usuario) o "tg:&lt;id&gt;" si no tiene alias.
      */
     public static String usernameOf(User from) {
-        return StringUtils.hasText(from.getUserName())
-                ? from.getUserName().toLowerCase(Locale.ROOT)
-                : syntheticUsernameOf(from.getId());
+        return StringUtils.hasText(from.getUserName()) ? from.getUserName().toLowerCase(Locale.ROOT) : syntheticUsernameOf(from.getId());
     }
 
     public static String syntheticUsernameOf(Long telegramId) {

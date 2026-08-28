@@ -68,9 +68,7 @@ public class TelegramSecurityUtils {
     }
 
     public static TelegramUserDetails getTelegramUserDetails() {
-        return SecurityUtils.getUserDetails() instanceof TelegramUserDetails telegramUserDetails
-                ? telegramUserDetails
-                : null;
+        return SecurityUtils.getUserDetails() instanceof TelegramUserDetails telegramUserDetails ? telegramUserDetails : null;
     }
 
     // ///////////// Chat //////////////////

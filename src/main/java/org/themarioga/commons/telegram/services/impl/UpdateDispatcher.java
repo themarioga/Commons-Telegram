@@ -35,9 +35,7 @@ public class UpdateDispatcher {
     private final PendingReplyRegistry pendingReplies;
     private final List<UpdateInterceptor> interceptors;
 
-    public UpdateDispatcher(String botName, TelegramClient telegramClient, Map<String, CommandHandler> commands,
-                            Map<String, CallbackQueryHandler> callbackQueries, PendingReplyRegistry pendingReplies,
-                            List<UpdateInterceptor> interceptors) {
+    public UpdateDispatcher(String botName, TelegramClient telegramClient, Map<String, CommandHandler> commands, Map<String, CallbackQueryHandler> callbackQueries, PendingReplyRegistry pendingReplies, List<UpdateInterceptor> interceptors) {
         this.botName = botName;
         this.telegramClient = telegramClient;
         this.commands = commands;
@@ -83,12 +81,10 @@ public class UpdateDispatcher {
         if (commandHandler != null) {
             commandHandler.callback(update.getMessage(), command.getCommandData());
         } else {
-            logger.error("Comando desconocido {} enviado por {}", update.getMessage().getText(),
-                    BotMessageUtils.getUserInfo(update.getMessage().getFrom()));
+            logger.error("Comando desconocido {} enviado por {}", update.getMessage().getText(), BotMessageUtils.getUserInfo(update.getMessage().getFrom()));
 
             try {
-                telegramClient.execute(new SendMessage(String.valueOf(update.getMessage().getChatId()),
-                        BotResponseErrorI18n.COMMAND_DOES_NOT_EXISTS));
+                telegramClient.execute(new SendMessage(String.valueOf(update.getMessage().getChatId()), BotResponseErrorI18n.COMMAND_DOES_NOT_EXISTS));
             } catch (TelegramApiException e) {
                 logger.error("Error al enviar mensaje {}", e.getMessage(), e);
             }
@@ -102,8 +98,7 @@ public class UpdateDispatcher {
         if (callbackQueryHandler != null) {
             callbackQueryHandler.callback(update.getCallbackQuery(), callbackQuery.getQueryData());
         } else {
-            logger.error("Querie desconocida {} enviado por {}", update.getCallbackQuery().getData(),
-                    BotMessageUtils.getUserInfo(update.getCallbackQuery().getFrom()));
+            logger.error("Querie desconocida {} enviado por {}", update.getCallbackQuery().getData(), BotMessageUtils.getUserInfo(update.getCallbackQuery().getFrom()));
 
             try {
                 AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery(update.getCallbackQuery().getId());

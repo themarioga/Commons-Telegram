@@ -38,7 +38,7 @@ public class TelegramBotsRegistrarConfig {
 
         @Bean(destroyMethod = "close")
         public TelegramBotsLongPollingApplication telegramLongPollingApplication(
-                ObjectProvider<List<SpringLongPollingBot>> bots) {
+                                                                                 ObjectProvider<List<SpringLongPollingBot>> bots) {
             TelegramBotsLongPollingApplication application = new TelegramBotsLongPollingApplication();
 
             for (SpringLongPollingBot bot : bots.getIfAvailable(List::of)) {
@@ -50,8 +50,7 @@ public class TelegramBotsRegistrarConfig {
 
                     logger.info("Bot registrado en long-polling: {}", bot.getClass().getSimpleName());
                 } catch (TelegramApiException e) {
-                    logger.error("No se ha podido registrar el bot {} en long-polling: {}",
-                            bot.getClass().getSimpleName(), e.getMessage(), e);
+                    logger.error("No se ha podido registrar el bot {} en long-polling: {}", bot.getClass().getSimpleName(), e.getMessage(), e);
                 }
             }
 
@@ -71,7 +70,7 @@ public class TelegramBotsRegistrarConfig {
 
         @Bean(destroyMethod = "close")
         public TelegramBotsSpringWebhookApplication telegramWebhookApplication(
-                ObjectProvider<List<SpringTelegramWebhookBot>> bots) throws TelegramApiException {
+                                                                               ObjectProvider<List<SpringTelegramWebhookBot>> bots) throws TelegramApiException {
             TelegramBotsSpringWebhookApplication application = new TelegramBotsSpringWebhookApplication();
 
             for (SpringTelegramWebhookBot bot : bots.getIfAvailable(List::of)) {

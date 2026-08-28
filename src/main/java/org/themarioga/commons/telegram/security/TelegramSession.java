@@ -29,8 +29,7 @@ public final class TelegramSession {
      * estando todavía en el hilo que atiende el update.
      */
     public static TelegramSession capture() {
-        return new TelegramSession(SecurityContextHolder.getContext().getAuthentication(),
-                TelegramContextHolder.get());
+        return new TelegramSession(SecurityContextHolder.getContext().getAuthentication(), TelegramContextHolder.get());
     }
 
     /**

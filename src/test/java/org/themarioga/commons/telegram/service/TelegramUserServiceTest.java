@@ -218,13 +218,7 @@ class TelegramUserServiceTest {
     }
 
     private org.telegram.telegrambots.meta.api.objects.User from(long id, String alias, String firstName, String languageCode) {
-        return org.telegram.telegrambots.meta.api.objects.User.builder()
-                .id(id)
-                .isBot(false)
-                .userName(alias)
-                .firstName(firstName)
-                .languageCode(languageCode)
-                .build();
+        return org.telegram.telegrambots.meta.api.objects.User.builder().id(id).isBot(false).userName(alias).firstName(firstName).languageCode(languageCode).build();
     }
 
 }

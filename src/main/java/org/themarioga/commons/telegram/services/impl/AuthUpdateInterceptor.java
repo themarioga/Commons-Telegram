@@ -19,7 +19,6 @@ import org.themarioga.commons.telegram.services.intf.TelegramRoomResolver;
 import org.themarioga.commons.telegram.services.intf.TelegramUserService;
 
 
-
 /**
  * Monta la sesión de cada update y —lo importante— la desmonta después.
  * <p>
@@ -37,8 +36,7 @@ public class AuthUpdateInterceptor implements UpdateInterceptor {
     private final TelegramAdmins admins;
 
     @Autowired
-    public AuthUpdateInterceptor(TelegramUserService telegramUserService, ObjectProvider<TelegramRoomResolver> roomResolver,
-                                 TelegramAdmins admins) {
+    public AuthUpdateInterceptor(TelegramUserService telegramUserService, ObjectProvider<TelegramRoomResolver> roomResolver, TelegramAdmins admins) {
         this.telegramUserService = telegramUserService;
         this.roomResolver = roomResolver;
         this.admins = admins;

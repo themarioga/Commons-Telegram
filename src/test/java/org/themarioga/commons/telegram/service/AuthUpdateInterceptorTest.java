@@ -150,8 +150,7 @@ class AuthUpdateInterceptorTest {
         when(roomResolverProvider.getIfAvailable()).thenReturn(null);
         when(telegramUserService.login(any())).thenReturn(telegramUser);
 
-        new AuthUpdateInterceptor(telegramUserService, roomResolverProvider, new TelegramAdmins(List.of(TELEGRAM_ID)))
-                .before(privateMessage(), "cclhbot");
+        new AuthUpdateInterceptor(telegramUserService, roomResolverProvider, new TelegramAdmins(List.of(TELEGRAM_ID))).before(privateMessage(), "cclhbot");
 
         Assertions.assertTrue(TelegramSecurityUtils.isAdmin());
     }
@@ -203,13 +202,7 @@ class AuthUpdateInterceptorTest {
     }
 
     private Update messageUpdate(long chatId, String chatType, String chatTitle) {
-        org.telegram.telegrambots.meta.api.objects.User from = org.telegram.telegrambots.meta.api.objects.User.builder()
-                .id(TELEGRAM_ID)
-                .firstName("Mario")
-                .isBot(false)
-                .userName("themarioga")
-                .languageCode("es")
-                .build();
+        org.telegram.telegrambots.meta.api.objects.User from = org.telegram.telegrambots.meta.api.objects.User.builder().id(TELEGRAM_ID).firstName("Mario").isBot(false).userName("themarioga").languageCode("es").build();
 
         Chat chat = Chat.builder().id(chatId).type(chatType).title(chatTitle).build();
 
