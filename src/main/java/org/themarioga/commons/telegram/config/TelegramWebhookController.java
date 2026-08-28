@@ -37,8 +37,7 @@ public class TelegramWebhookController {
 
     private static final Logger logger = LoggerFactory.getLogger(TelegramWebhookController.class);
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     private final TelegramBotsSpringWebhookApplication application;
 
@@ -53,9 +52,7 @@ public class TelegramWebhookController {
 
             BotApiMethod<?> response = application.receiveUpdate(botPath, update);
 
-            return response != null
-                    ? ResponseEntity.ok(OBJECT_MAPPER.writeValueAsString(response))
-                    : ResponseEntity.ok().build();
+            return response != null ? ResponseEntity.ok(OBJECT_MAPPER.writeValueAsString(response)) : ResponseEntity.ok().build();
         } catch (Exception e) {
             // Devolver un error haría que Telegram reintentara el update indefinidamente.
             logger.error("Error atendiendo el update del bot {}: {}", botPath, e.getMessage(), e);
